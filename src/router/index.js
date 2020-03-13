@@ -20,7 +20,18 @@ const routes = [
   },
   {
     path: '/formMetadates',
-    name: 'formMeta',
+    name: 'FormMeta',
+    component: () => import( '../views/FormMeta.vue')
+  },
+  {
+    path: '/types',
+    name: 'Types',
+    component: () => import( '../views/Types.vue')
+  },
+  {
+    path: '/typesGroups',
+    name: 'typesGroups',
+    component: () => import( '../views/TypesGroups.vue')
   }
 ]
 

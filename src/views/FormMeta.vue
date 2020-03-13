@@ -16,43 +16,29 @@
 							<input type="text"	class="form-control"/>
 						</div>
 						<div class="form-group">
-							<label>HOST</label> <input type="text"
+							<label>METADATE</label> <input type="text"
 								class="form-control"/>
 						</div>
 						<div class="form-group">
-							<label>PORT</label> <input type="text"
+							<label>DESCRIPTION</label> <input type="text"
 								class="form-control"/>
 						</div>
 						<div class="form-group">
-							<label>USER</label> <input type="text"
-								class="form-control"/>
-						</div>
-						<div class="form-group">
-							<label>PASS</label> <input type="text"
-								class="form-control"/>
-						</div>
-						<div class="form-group">
-							<label>ALIAS</label> <input type="text"
+							<label>LEVEL</label> <input type="text"
 								class="form-control"/>
 						</div>
 						<div class="form-group">
 							<label>ACTIVE</label> <input type="text"
 								class="form-control"/>
 						</div>
-						<div class="form-group">
-							<label>ID TYPE</label> <input type="text"
-								class="form-control"/>
-						</div>
-						<div class="form-group">
-							<label>DATE</label> <input type="text"
-								class="form-control"/>
-						</div>
 					</div>
 					<div class="card-footer">
 						<input type="submit" value="Guardar" class="btn btn-success">
+						<input type="submit" value="Editar" class="btn btn-warning">
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
+  </div>
 </template>
