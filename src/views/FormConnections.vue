@@ -13,19 +13,19 @@
 					<div class="card-body">
 						<div class="form-group">
 							<label>HOST</label> 
-							<input type="text" class="form-control" v-model="host"/>
+							<input type="text" class="form-control" v-model="hostcliente"/>
 						</div>
 						<div class="form-group">
 							<label>PORT</label> 
-							<input type="text" class="form-control" v-model="port"/>
+							<input type="text" class="form-control" v-model="puerto"/>
 						</div>
 						<div class="form-group">
 							<label>USER</label> 
-							<input type="text" class="form-control" v-model="user"/>
+							<input type="text" class="form-control" v-model="usuario"/>
 						</div>
 						<div class="form-group">
 							<label>PASS</label> 
-							<input type="text" class="form-control" v-model="pass"/>
+							<input type="text" class="form-control" v-model="contra"/>
 						</div>
 						<div class="form-group">
 							<label>ALIAS</label> 
@@ -59,10 +59,10 @@ export default {
         methods: {
             formSubmit() {
                 this.axios.post('http://localhost:8191/crearConnections', {
-					host: this.host,
-					port: this.port,
-					user: this.user,
-					pass: this.pass,
+					host: this.hostcliente,
+					port: this.puerto,
+					user: this.usuario,
+					pass: this.contra,
 					alias: this.alias,
 					active: this.active,
 					idType: this.idType,
