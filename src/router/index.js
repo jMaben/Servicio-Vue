@@ -32,6 +32,16 @@ const routes = [
     path: '/typesGroups',
     name: 'typesGroups',
     component: () => import( '../views/TypesGroups.vue')
+  },
+  {
+    path: '/connections',
+    name: 'Connections',
+    component: () => import( '../views/Connections.vue')
+  },
+  {
+    path: '/formConnections',
+    name: 'FormConnections',
+    component: () => import( '../views/FormConnections.vue')
   }
 ]
 
