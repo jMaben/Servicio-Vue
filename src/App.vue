@@ -4,7 +4,7 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">Metadates</router-link> |
       <router-link to="/types">Types</router-link> |
-      <router-link to="/typesGroups">Types Groups</router-link>
+      <router-link to="/typesGroups">Types groups</router-link>
     </div>
     <router-view/>
   </div>
