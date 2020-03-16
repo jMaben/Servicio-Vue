@@ -12,10 +12,6 @@
 					</div>
 					<div class="card-body">
 						<div class="form-group">
-							<label>ID</label> 
-							<input type="text"	class="form-control"/>
-						</div>
-						<div class="form-group">
 							<label>METADATE</label> <input type="text"
 								class="form-control"/>
 						</div>

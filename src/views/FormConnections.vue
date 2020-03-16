@@ -12,45 +12,36 @@
 					</div>
 					<div class="card-body">
 						<div class="form-group">
-							<label>ID</label> 
-							<input type="text"	class="form-control"/>
+							<label>HOST</label> 
+							<input type="text" class="form-control" v-model="host"/>
 						</div>
 						<div class="form-group">
-							<label>HOST</label> <input type="text"
-								class="form-control"/>
+							<label>PORT</label> 
+							<input type="text" class="form-control" v-model="port"/>
 						</div>
 						<div class="form-group">
-							<label>PORT</label> <input type="text"
-								class="form-control"/>
+							<label>USER</label> 
+							<input type="text" class="form-control" v-model="user"/>
 						</div>
 						<div class="form-group">
-							<label>USER</label> <input type="text"
-								class="form-control"/>
+							<label>PASS</label> 
+							<input type="text" class="form-control" v-model="pass"/>
 						</div>
 						<div class="form-group">
-							<label>PASS</label> <input type="text"
-								class="form-control"/>
+							<label>ALIAS</label> 
+							<input type="text" class="form-control" v-model="alias"/>
 						</div>
 						<div class="form-group">
-							<label>ALIAS</label> <input type="text"
-								class="form-control"/>
+							<label>ACTIVE</label> 
+							<input type="text" class="form-control" v-model="active"/>
 						</div>
 						<div class="form-group">
-							<label>ACTIVE</label> <input type="text"
-								class="form-control"/>
-						</div>
-						<div class="form-group">
-							<label>ID TYPE</label> <input type="text"
-								class="form-control"/>
-						</div>
-						<div class="form-group">
-							<label>DATE</label> <input type="text"
-								class="form-control"/>
+							<label>ID TYPE</label> 
+							<input type="text" class="form-control" v-model="idType"/>
 						</div>
 					</div>
 					<div class="card-footer">
-						<input type="submit" value="Guardar" class="btn btn-success">
-						<input type="submit" value="Editar" class="btn btn-warning">
+						<button type="submit" id="Guardar" class="btn btn-success" onclick="formSubmit()"> Guardar</button>
 					</div>
 				</div>
 			</form>
@@ -58,3 +49,33 @@
 	</div>
   </div>
 </template>
+
+
+<script>
+import axios from "axios";
+ var today = new Date();
+ var date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate();
+export default {
+        methods: {
+            formSubmit() {
+                this.axios.post('http://localhost:8191/crearConnections', {
+					host: this.host,
+					port: this.port,
+					user: this.user,
+					pass: this.pass,
+					alias: this.alias,
+					active: this.active,
+					idType: this.idType,
+					createdData: date
+
+                })
+                .then(function (response) {
+                	console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+			}
+	} 	       
+}
+</script>
