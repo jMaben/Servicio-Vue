@@ -5,7 +5,7 @@
       <h3>Connections</h3>
 <div class="container mt-4">
 		<div class="col-sm-6">
-			<form>
+			<form @submit.prevent="formSubmit">
 				<div class="card">
 					<div class="card-header">
 						<h3>Connections</h3>
@@ -13,19 +13,19 @@
 					<div class="card-body">
 						<div class="form-group">
 							<label>HOST</label> 
-							<input type="text" class="form-control" v-model="hostcliente"/>
+							<input type="text" class="form-control" v-model="host"/>
 						</div>
 						<div class="form-group">
 							<label>PORT</label> 
-							<input type="text" class="form-control" v-model="puerto"/>
+							<input type="number" class="form-control" v-model="port"/>
 						</div>
 						<div class="form-group">
 							<label>USER</label> 
-							<input type="text" class="form-control" v-model="usuario"/>
+							<input type="text" class="form-control" v-model="user"/>
 						</div>
 						<div class="form-group">
 							<label>PASS</label> 
-							<input type="text" class="form-control" v-model="contra"/>
+							<input type="password" class="form-control" v-model="pass"/>
 						</div>
 						<div class="form-group">
 							<label>ALIAS</label> 
@@ -41,7 +41,7 @@
 						</div>
 					</div>
 					<div class="card-footer">
-						<button type="submit" id="Guardar" class="btn btn-success" onclick="formSubmit()"> Guardar</button>
+						<button type="submit" id="Guardar" class="btn btn-success"> Guardar</button>
 					</div>
 				</div>
 			</form>
@@ -53,16 +53,33 @@
 
 <script>
 import axios from "axios";
+import http from "http";
  var today = new Date();
  var date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate();
 export default {
+	name: 'Home',
+  data(){
+    return{
+      errors:[],
+      host: '',
+      port: null,
+      user: '',
+      pass: '',
+      alias: '',
+	  active: false,
+	  idType: null,
+      createdData: null,
+      id: null,
+      connectionsMetadates:[],
+    };
+  },
         methods: {
             formSubmit() {
                 this.axios.post('http://localhost:8191/crearConnections', {
-					host: this.hostcliente,
-					port: this.puerto,
-					user: this.usuario,
-					pass: this.contra,
+					host: this.host,
+					port: this.port,
+					user: this.user,
+					pass: this.pass,
 					alias: this.alias,
 					active: this.active,
 					idType: this.idType,
