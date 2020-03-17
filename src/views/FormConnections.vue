@@ -33,15 +33,18 @@
 						</div>
 						<div class="form-group">
 							<label>ACTIVE</label> 
-							<input type="text" class="form-control" v-model="active"/>
+							<input type="checkbox" class="form-control" v-model="active"/>
 						</div>
 						<div class="form-group">
 							<label>ID TYPE</label> 
-							<input type="text" class="form-control" v-model="idType"/>
+       					<select class="form-control" @change="Type($event)">
+           					 <option value="" selected disabled>TYPE</option>
+           					 <option v-for="types in types" :key="types.id" :value="types.id">{{types.type}}</option>
+          				</select>
 						</div>
 					</div>
 					<div class="card-footer">
-						<button type="submit" id="Guardar" class="btn btn-success"> Guardar</button>
+						<input type="submit" value="Guardar" id="Guardar" class="btn btn-success" />
 					</div>
 				</div>
 			</form>
@@ -60,7 +63,7 @@ export default {
 	name: 'Home',
   data(){
     return{
-      errors:[],
+	  types: [],
       host: '',
       port: null,
       user: '',
@@ -70,29 +73,48 @@ export default {
 	  idType: null,
       createdData: null,
       id: null,
-      connectionsMetadates:[],
+      connectionsMetadates:[]
     };
+  },
+    created(){
+    axios.get('http://localhost:8191/listarTypes').then(response => {
+      this.types = response.data
+    })
   },
         methods: {
             formSubmit() {
-                this.axios.post('http://localhost:8191/crearConnections', {
-					host: this.host,
-					port: this.port,
-					user: this.user,
-					pass: this.pass,
-					alias: this.alias,
-					active: this.active,
-					idType: this.idType,
-					createdData: date
 
-                })
-                .then(function (response) {
-                	console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-			}
+				     const connec = {
+        			 host: this.host,
+         			 port: this.port,
+        			 user: this.user,
+        			 pass: this.pass,
+        			 alias: this.alias,
+					 active: this.active,
+					 idType: this.types.id,
+        			 createDate: date,
+      				 }
+				
+					 Object.setPrototypeOf(connec, null);
+				
+					   console.log(connec);
+					   
+      				axios.post('http://localhost:8191//crearConnections', connec).catch(err => {
+               			console.log(err);
+               			return null;
+					   })
+					   .then(function (response) {
+                		console.log(response);
+                		})
+                		.catch(function (error) {
+                   	 	console.log(error);
+                		});
+			},
+
+	  Type(event) {
+      this.id = event.target.value;
+      console.log(this.id);
+      }
 	} 	       
 }
 </script>
