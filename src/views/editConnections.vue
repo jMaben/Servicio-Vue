@@ -1,5 +1,5 @@
 <template>
-  <div class="formConnections">
+  <div class="editConnections">
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -18,30 +18,30 @@
             <div class="card-body">
               <div class="form-group">
                 <label>HOST</label>
-                <input type="text" class="form-control" v-model="host" />
+                <input type="text" class="form-control" v-model="connec.host" />
               </div>
               <div class="form-group">
                 <label>PORT</label>
-                <input type="number" class="form-control" v-model="port" />
+                <input type="number" class="form-control" v-model="connec.port" />
               </div>
               <div class="form-group">
                 <label>USER</label>
-                <input type="text" class="form-control" v-model="user" />
+                <input type="text" class="form-control" v-model="connec.user" />
               </div>
               <div class="form-group">
                 <label>PASS</label>
-                <input type="password" class="form-control" v-model="pass" />
+                <input type="password" class="form-control" v-model="connec.pass" />
               </div>
               <div class="form-group">
                 <label>ALIAS</label>
-                <input type="text" class="form-control" v-model="alias" />
+                <input type="text" class="form-control" v-model="connec.alias" />
               </div>
               <div class="form-group">
                 <label>ACTIVE</label>
-                <input type="checkbox" class="form-control" v-model="active" />
+                <input type="checkbox" class="form-control" v-model="connec.active" />
               </div>
               <div class="form-group">
-                <label>ID TYPE</label>
+                <label>TYPE</label>
                 <select class="form-control" @change="Type($event)">
                   <option value selected disabled>TYPE</option>
                   <option v-for="types in types" :key="types.id" :value="types.id">{{types.type}}</option>
@@ -67,9 +67,10 @@ var date =
   today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
 export default {
-  name: "Home",
+  props: ["idvalor"],
   data() {
     return {
+      connec: [],
       types: [],
       host: "",
       port: null,
@@ -87,36 +88,47 @@ export default {
     axios.get("http://localhost:8191/listarTypes").then(response => {
       this.types = response.data;
     });
+
+    axios
+      .get("http://localhost:8191/verConnections/" + parseInt(this.idvalor))
+      .then(response => {
+        this.connec = response.data;
+      });
   },
   methods: {
     formSubmit() {
-      const connec = {
-        host: this.host,
-        port: this.port,
-        user: this.user,
-        pass: this.pass,
-        alias: this.alias,
-        active: this.active,
-        idType: null,
+      const ob = {
+        host: this.connec.host,
+        port: this.connec.port,
+        user: this.connec.user,
+        pass: this.connec.pass,
+        alias: this.connec.alias,
+        active: this.connec.active,
+		idType: parseInt(this.id),
         createData: date
       };
 
-      Object.setPrototypeOf(connec, null);
+      Object.setPrototypeOf(ob, null);
 
-      console.log(connec);
+      console.log(ob);
 
       axios
-        .post("http://localhost:8191//crearConnections", connec)
+        .put("http://localhost:8191/editarConnections/" + this.idvalor, ob)
         .catch(err => {
           console.log(err);
           return null;
-        })
-        .then(function(response) {
-          console.log(response);
-        })
-        .catch(function(error) {
-          console.log(error);
         });
+
+      /*axios.put('http://localhost:8191/editarConnections/'+this.idvalor, ob).catch(err => {
+               			console.log(err);
+               			return null;
+					   })
+					   .then(function (response) {
+                		console.log(response);
+                		})
+                		.catch(function (error) {
+                   	 	console.log(error);
+                		});*/
     },
 
     Type(event) {

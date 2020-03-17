@@ -36,7 +36,13 @@ const routes = [
   {
     path: '/connections',
     name: 'Connections',
-    component: () => import( '../views/Connections.vue')
+    component: () => import( '../views/Connections.vue'),
+  },
+  {
+    path: '/editConnections/:idvalor',
+    name: 'editConnections',
+    component: () => import( '../views/editConnections.vue'),
+    props: true,
   },
   {
     path: '/formConnections',
