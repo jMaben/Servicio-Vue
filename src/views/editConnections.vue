@@ -7,10 +7,9 @@
       crossorigin="anonymous"
     />
 
-    <h3>Connections</h3>
     <div class="container mt-4">
       <div class="col-sm-6">
-        <form @submit.prevent="formSubmit">
+        <form @submit.prevent="formSubmit" style="margin: 0 auto;">
           <div class="card">
             <div class="card-header">
               <h3>Connections</h3>
@@ -62,10 +61,7 @@
 <script>
 import axios from "axios";
 import http from "http";
-var today = new Date();
-var date =
-  today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-
+var comp = false;
 export default {
   props: ["idvalor"],
   data() {
@@ -114,28 +110,22 @@ export default {
       Object.setPrototypeOf(ob, null);
 
       console.log(ob);
-
-      axios
-        .put("http://localhost:8191/editarConnections/" + this.idvalor, ob)
-        .catch(err => {
-          console.log(err);
-          return null;
-        });
-
-      this.$router.push('/connections');
-      /*axios.put('http://localhost:8191/editarConnections/'+this.idvalor, ob).catch(err => {
-               			console.log(err);
-               			return null;
-					   })
-					   .then(function (response) {
-                		console.log(response);
-                		})
-                		.catch(function (error) {
-                   	 	console.log(error);
-                		});*/
+      if (comp == true) {
+        axios
+          .put("http://localhost:8191/editarConnections/" + this.idvalor, ob)
+          .catch(err => {
+            console.log(err);
+            return null;
+          });
+        alert("Se han actualizado los cambios");
+        this.$router.push("/connections");
+      } else {
+        alert("Introduce un Type");
+      }
     },
 
     Type(event) {
+      this.comp = true;
       this.id = event.target.value;
       console.log(this.id);
     }

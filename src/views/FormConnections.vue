@@ -7,10 +7,9 @@
       crossorigin="anonymous"
     />
 
-    <h3>Connections</h3>
     <div class="container mt-4">
       <div class="col-sm-6">
-        <form @submit.prevent="formSubmit">
+        <form @submit.prevent="formSubmit" style="margin: 0 auto;">
           <div class="card">
             <div class="card-header">
               <h3>Connections</h3>
@@ -62,6 +61,7 @@
 <script>
 import axios from "axios";
 import http from "http";
+var comp = false;
 export default {
   name: "Home",
   data() {
@@ -103,21 +103,29 @@ export default {
 
       console.log(connec);
 
-      axios
-        .post("http://localhost:8191/crearConnections", connec)
-        .catch(err => {
-          console.log(err);
-          return null;
-        })
-        .then(function(response) {
-          console.log(response);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+      if (comp == true) {
+        axios
+          .post("http://localhost:8191/crearConnections", connec)
+          .catch(err => {
+            console.log(err);
+            return null;
+          })
+          .then(function(response) {
+            console.log(response);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+
+        alert("Se ha registrado una nueva conexión");
+        this.$router.push("/connections");
+      } else {
+        alert("Introduce un Tipo");
+      }
     },
 
     Type(event) {
+      this.comp = true;
       this.types = event.target.value;
       console.log(this.types);
     }

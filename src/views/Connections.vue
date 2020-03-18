@@ -20,7 +20,7 @@
     </a>
     <p></p>
     <div class="post">
-      <table class="table">
+      <table class="table" style="margin: 0 auto;">
         <thead>
           <tr>
             <th>ID</th>
@@ -38,12 +38,27 @@
         <tbody>
           <tr v-for="post in post" v-bind:key="post.id">
             <td>{{ post.id }}</td>
-            <td>{{ post.host }}</td>
+            <td>
+              <strong>{{ post.host }}</strong>
+            </td>
             <td>{{ post.port }}</td>
-            <td>{{ post.user }}</td>
-            <td>{{ post.pass }}</td>
-            <td>{{ post.alias }}</td>
-            <td>{{ post.active }}</td>
+            <td>
+              <strong>{{ post.user }}</strong>
+            </td>
+            <td>
+              <span v-for="pass in post.pass" :key="pass">
+                <i class="fas fa-asterisk"></i>
+              </span>
+            </td>
+            <td>
+              <strong>{{ post.alias }}</strong>
+            </td>
+            <td v-if="post.active">
+              <i class="fas fa-circle"></i>
+            </td>
+            <td v-else>
+              <i class="far fa-circle"></i>
+            </td>
             <td>{{ post.types.type }}</td>
             <td>{{ post.createdData }}</td>
             <td class="text-centre">
@@ -84,11 +99,9 @@ export default {
 
     EliminarConnections: async function(number) {
       console.log(number);
-      const connec =
-      await axios
-        .get("http://localhost:8191/verConnections/" + number);
-
-
+      const connec = await axios.get(
+        "http://localhost:8191/verConnections/" + number
+      );
 
       console.log(connec.data);
 
