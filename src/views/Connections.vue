@@ -30,7 +30,7 @@
             <th>PASS</th>
             <th>ALIAS</th>
             <th>ACTIVE</th>
-            <th>ID TYPE</th>
+            <th>TYPE</th>
             <th>DATE</th>
             <th>ACCIONES</th>
           </tr>
@@ -44,7 +44,7 @@
             <td>{{ post.pass }}</td>
             <td>{{ post.alias }}</td>
             <td>{{ post.active }}</td>
-            <td>{{ post.idType }}</td>
+            <td>{{ post.types.type }}</td>
             <td>{{ post.createdData }}</td>
             <td class="text-centre">
               <button @click="EditarConnections(post.id)" class="btn btn-warning btn-edit">
@@ -83,18 +83,21 @@ export default {
     },
 
     EliminarConnections(number) {
-      var connec;
+      console.log(number);
+      //var connec;
+      const connec =
       axios
-        .get("http://localhost:8191/verConnections/" + number)
-        .then(response => {
-          connec = response.data;
-          connec.active = false;
-          console.log(connec);
-        });
+        .get("http://localhost:8191/verConnections/" + number);
+
+
 
       if (confirm("¿Seguro que desea desactivar la conexion?")) {
+        var con = connec.data;
+        console.log(con);
+        con.active = false;
+
         axios
-          .put("http://localhost:8191/editarConnections/" + number, connec)
+          .put("http://localhost:8191/editarConnections/" + number, con)
           .catch(err => {
             console.log(err);
             return null;

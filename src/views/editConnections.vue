@@ -79,7 +79,6 @@ export default {
       alias: "",
       active: false,
       idType: null,
-      createdData: date,
       id: null,
       connectionsMetadates: []
     };
@@ -97,6 +96,10 @@ export default {
   },
   methods: {
     formSubmit() {
+      const prueba = {
+        id: parseInt(this.id)
+      };
+
       const ob = {
         host: this.connec.host,
         port: this.connec.port,
@@ -104,10 +107,10 @@ export default {
         pass: this.connec.pass,
         alias: this.connec.alias,
         active: this.connec.active,
-		idType: parseInt(this.id),
-        createData: date
+        types: prueba
       };
 
+      Object.setPrototypeOf(prueba, null);
       Object.setPrototypeOf(ob, null);
 
       console.log(ob);
@@ -119,6 +122,7 @@ export default {
           return null;
         });
 
+      this.$router.push('/connections');
       /*axios.put('http://localhost:8191/editarConnections/'+this.idvalor, ob).catch(err => {
                			console.log(err);
                			return null;

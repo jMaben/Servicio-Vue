@@ -41,10 +41,10 @@
                 <input type="checkbox" class="form-control" v-model="active" />
               </div>
               <div class="form-group">
-                <label>ID TYPE</label>
+                <label>TYPE</label>
                 <select class="form-control" @change="Type($event)">
                   <option value selected disabled>TYPE</option>
-                  <option v-for="types in types" :key="types.id" :value="types.id">{{types.type}}</option>
+                  <option v-for="type in ltypes" :key="type.id" :value="type.id">{{type.type}}</option>
                 </select>
               </div>
             </div>
@@ -62,34 +62,33 @@
 <script>
 import axios from "axios";
 import http from "http";
-var today = new Date();
-var date =
-  today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-
 export default {
   name: "Home",
   data() {
     return {
-      types: [],
+      ltypes: [],
       host: "",
       port: null,
       user: "",
       pass: "",
       alias: "",
       active: false,
-      idType: null,
-      createdData: date,
+      types: null,
       id: null,
       connectionsMetadates: []
     };
   },
   created() {
     axios.get("http://localhost:8191/listarTypes").then(response => {
-      this.types = response.data;
+      this.ltypes = response.data;
     });
   },
   methods: {
     formSubmit() {
+      const prueba = {
+        id: this.types
+      };
+
       const connec = {
         host: this.host,
         port: this.port,
@@ -97,8 +96,7 @@ export default {
         pass: this.pass,
         alias: this.alias,
         active: this.active,
-        idType: null,
-        createData: date
+        types: prueba
       };
 
       Object.setPrototypeOf(connec, null);
@@ -106,7 +104,7 @@ export default {
       console.log(connec);
 
       axios
-        .post("http://localhost:8191//crearConnections", connec)
+        .post("http://localhost:8191/crearConnections", connec)
         .catch(err => {
           console.log(err);
           return null;
@@ -120,8 +118,8 @@ export default {
     },
 
     Type(event) {
-      this.id = event.target.value;
-      console.log(this.id);
+      this.types = event.target.value;
+      console.log(this.types);
     }
   }
 };
