@@ -22,7 +22,7 @@
               </div>
               <div class="form-group">
                 <label>PORT</label>
-                <input type="number" class="form-control" v-model="connec.port" />
+                <input type="number" class="form-control" min="0" max="65535" v-model="connec.port" />
               </div>
               <div class="form-group">
                 <label>USER</label>

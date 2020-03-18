@@ -82,18 +82,18 @@ export default {
       this.$router.push(route);
     },
 
-    EliminarConnections(number) {
+    EliminarConnections: async function(number) {
       console.log(number);
-      //var connec;
       const connec =
-      axios
+      await axios
         .get("http://localhost:8191/verConnections/" + number);
 
 
 
+      console.log(connec.data);
+
       if (confirm("¿Seguro que desea desactivar la conexion?")) {
         var con = connec.data;
-        console.log(con);
         con.active = false;
 
         axios
@@ -103,7 +103,7 @@ export default {
             return null;
           });
         alert("Se ha desactivado");
-        //location.reload(true);
+        location.reload(true);
       }
     }
   }
