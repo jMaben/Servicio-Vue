@@ -60,13 +60,21 @@
             <td>{{ post.types.type }}</td>
             <td>{{ post.createdData }}</td>
             <td class="text-centre">
-              <button @click="CheckConnections(post.id)" class="btn btn-success">
+              <button
+                title="Comprobar conexion"
+                @click="CheckConnections(post.id)"
+                class="btn btn-success"
+              >
                 <i class="fas fa-check-square"></i>
               </button>
-              <button @click="EditarConnections(post.id)" class="btn btn-warning btn-edit">
+              <button
+                title="Editar"
+                @click="EditarConnections(post.id)"
+                class="btn btn-warning btn-edit"
+              >
                 <i class="fas fa-edit"></i>
               </button>
-              <button @click="EliminarConnections(post.id)" class="btn btn-danger">
+              <button title="Eliminar" @click="EliminarConnections(post.id)" class="btn btn-danger">
                 <i class="fas fa-trash-alt"></i>
               </button>
             </td>
