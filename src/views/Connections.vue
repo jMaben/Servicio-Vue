@@ -60,6 +60,9 @@
             <td>{{ post.types.type }}</td>
             <td>{{ post.createdData }}</td>
             <td class="text-centre">
+              <button @click="CheckConnections(post.id)" class="btn btn-success">
+                <i class="fas fa-check-square"></i>
+              </button>
               <button @click="EditarConnections(post.id)" class="btn btn-warning btn-edit">
                 <i class="fas fa-edit"></i>
               </button>
@@ -116,7 +119,26 @@ export default {
         alert("Se ha desactivado");
         location.reload(true);
       }
-    }
+    },
+
+      CheckConnections: async function(number) {
+      console.log(number);
+      const connec = await axios.get(
+        "http://localhost:8191/verConnections/" + number
+      );
+
+      const connection = connec.data;
+      console.log(connection);
+
+      var config = {
+        headers: {'Access-Control-Allow-Origin': '*'}
+      };
+
+      const checkTest = await axios.get('http://localhost:8888/sql/tables/'+connection.host+'/'+connection.port+'/'+connection.user+'/'+connection.pass+'/'+connection.alias, config);
+
+        console.log(checkTest);
+
+    } 
   }
 };
 </script>
