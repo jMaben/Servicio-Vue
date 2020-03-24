@@ -121,7 +121,7 @@ export default {
       }
     },
 
-      CheckConnections: async function(number) {
+    CheckConnections: async function(number) {
       console.log(number);
       const connec = await axios.get(
         "http://localhost:8191/verConnections/" + number
@@ -131,14 +131,37 @@ export default {
       console.log(connection);
 
       var config = {
-        headers: {'Access-Control-Allow-Origin': '*'}
+        headers: { "Access-Control-Allow-Origin": "*" }
       };
 
-      const checkTest = await axios.get('http://localhost:8888/sql/tables/'+connection.host+'/'+connection.port+'/'+connection.user+'/'+connection.pass+'/'+connection.alias, config);
+      const checkTest = await axios.get(
+        "http://localhost:8888/sql/tables/" +
+          connection.host +
+          "/" +
+          connection.port +
+          "/" +
+          connection.user +
+          "/" +
+          connection.pass +
+          "/" +
+          connection.alias,
+        config
+      );
+      console.log(checkTest);
 
-        console.log(checkTest);
-
-    } 
+      if (checkTest.data instanceof Array) {
+        if (checkTest.data.length < 1) {
+          alert(
+            "Error al conectarse, compruebe que estan todos los datos correctos."
+          );
+        } else {
+          var text =
+            "Se ha conectado con exito, aqui estan sus tablas: " +
+            checkTest.data;
+          alert(text);
+        }
+      }
+    }
   }
 };
 </script>

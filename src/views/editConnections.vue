@@ -125,7 +125,7 @@ export default {
     },
 
     Type(event) {
-      this.comp = true;
+      comp = true;
       this.id = event.target.value;
       console.log(this.id);
     }
