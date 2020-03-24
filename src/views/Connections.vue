@@ -46,9 +46,7 @@
               <strong>{{ post.user }}</strong>
             </td>
             <td>
-              <span v-for="pass in post.pass" :key="pass">
-                <i class="fas fa-asterisk"></i>
-              </span>
+              <i class="fas fa-asterisk"></i>
             </td>
             <td>
               <strong>{{ post.alias }}</strong>
