@@ -14,6 +14,9 @@
       crossorigin="anonymous"
     />
 
+    <button v-on:click="showAlert">Hello world</button>
+
+
     <h1>Connections</h1>
     <a href="/formConnections" class="btn btn-success">
       <i class="fas fa-plus-circle"></i> Nuevo
@@ -85,13 +88,22 @@
   </div>
 </template>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 <script>
+import Vue from 'vue';
+import VueSweetalert2 from 'vue-sweetalert2';
+
+Vue.use(VueSweetalert2);
+
 import axios from "axios";
 export default {
   name: "app",
   data() {
     return {
-      post: []
+      post: [],
+      p1: true
     };
   },
   mounted() {
@@ -130,13 +142,13 @@ export default {
     },
 
     CheckConnections: async function(number) {
-      console.log(number);
+      //console.log(number);
       const connec = await axios.get(
         "http://localhost:8191/verConnections/" + number
       );
 
       const connection = connec.data;
-      console.log(connection);
+      //console.log(connection);
 
       var config = {
         headers: { "Access-Control-Allow-Origin": "*" }
@@ -159,17 +171,40 @@ export default {
 
       if (checkTest.data instanceof Array) {
         if (checkTest.data.length < 1) {
-          alert(
-            "Error al conectarse, compruebe que estan todos los datos correctos."
-          );
+this.$swal.fire({
+  position: 'top-end',
+  icon: 'error',
+  title: 'Oops... No se ha podido conectar',
+  text: 'Algo ha salido mal!',
+  showConfirmButton: false,
+  timer: 2000
+})
+
         } else {
-          var text =
-            "Se ha conectado con exito, aqui estan sus tablas: " +
-            checkTest.data;
-          alert(text);
+var text = "Se ha establecido conexión con "+ connection.alias;
+
+  this.$swal.fire({
+  position: 'top-end',
+  icon: 'success',
+  title: text,
+  showConfirmButton: false,
+  timer: 2100
+})
         }
       }
-    }
+    },
+    showAlert(){
+            // Use sweetalret2
+            //this.$swal('Hello Vue world!!!');
+            this.$swal.fire({
+  position: 'top-end',
+  icon: 'success',
+  title: 'Your work has been saved',
+  showConfirmButton: false,
+  timer: 2100
+})
+
+        }
   }
 };
 </script>
