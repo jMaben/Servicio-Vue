@@ -59,6 +59,11 @@
 
 
 <script>
+import Vue from "vue";
+import VueSweetalert2 from "vue-sweetalert2";
+
+Vue.use(VueSweetalert2);
+
 import axios from "axios";
 import http from "http";
 var comp = false;
@@ -101,9 +106,36 @@ export default {
 
       Object.setPrototypeOf(connec, null);
 
-      console.log(connec);
+      var errorText = "";
+      var fields = true;
 
-      if (comp == true) {
+      if (this.host == "") {
+        errorText = errorText + "\n El host es obligatorio,";
+        fields = false;
+      }
+      if (!this.port) {
+        errorText = errorText + "\n El puerto es obligatorio,";
+        fields = false;
+      }
+      if (this.user == "") {
+        errorText = errorText + "\n El usuario es obligatorio,";
+        fields = false;
+      }
+      if (this.pass == "") {
+        errorText = errorText + "\n La contraseña es obligatoria,";
+        fields = false;
+      }
+      if (this.alias == "") {
+        errorText = errorText + "\n El alias es obligatorio,";
+        fields = false;
+      }
+
+      if (comp == false) {
+        errorText = errorText + "\n El type es obligatorio";
+        fields = false;
+      }
+
+      if (fields == true) {
         axios
           .post("http://localhost:8191/crearConnections", connec)
           .catch(err => {
@@ -116,11 +148,15 @@ export default {
           .catch(function(error) {
             console.log(error);
           });
-
-        alert("Se ha registrado una nueva conexión");
+        var textWell = "Se ha registrado la conexión " + this.alias;
+        this.$swal.fire(
+          "Se ha registrado una nueva conexión",
+          textWell,
+          "success"
+        );
         this.$router.push("/connections");
       } else {
-        alert("Introduce un Tipo");
+        this.$swal.fire("Introduce bien los datos", errorText, "error");
       }
     },
 
@@ -128,6 +164,10 @@ export default {
       comp = true;
       this.types = event.target.value;
       console.log(this.types);
+    },
+    showAlert() {
+      // Use sweetalret2
+      this.$swal.fire("MyModal");
     }
   }
 };

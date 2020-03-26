@@ -46,8 +46,8 @@
               <strong>{{ post.user }}</strong>
             </td>
             <td>
-              <button title="ShowPass" @click="showAlert(post.pass)" class="btn btn-dark">
-              <i class="fas fa-asterisk"></i>
+              <button title="Mostrar contraseña" @click="showAlert(post.pass)" class="btn btn-dark">
+                <i class="fas fa-asterisk"></i>
               </button>
             </td>
             <td>
@@ -91,8 +91,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <script>
-import Vue from 'vue';
-import VueSweetalert2 from 'vue-sweetalert2';
+import Vue from "vue";
+import VueSweetalert2 from "vue-sweetalert2";
 
 Vue.use(VueSweetalert2);
 
@@ -122,39 +122,40 @@ export default {
       const connec = await axios.get(
         "http://localhost:8191/verConnections/" + number
       );
-        var con = connec.data;
-        var title = "¿Seguro que desea desactivar " + con.alias + " ?";
+      var con = connec.data;
+      var title = "¿Seguro que desea desactivar " + con.alias + " ?";
       //console.log(connec.data);
 
-this.$swal.fire({
-  title: title,
-  text: "Se desactivara la conexón!",
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonColor: '#3085d6',
-  cancelButtonColor: '#d33',
-  confirmButtonText: 'Desactivar'
-}).then((result) => {
-  if (result.value) {
-        con.active = false;
+      this.$swal
+        .fire({
+          title: title,
+          text: "Se desactivara la conexón!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Desactivar"
+        })
+        .then(result => {
+          if (result.value) {
+            con.active = false;
 
-        axios
-          .put("http://localhost:8191/editarConnections/" + number, con)
-          .catch(err => {
-            console.log(err);
-            return null;
-          });
-    
-    Swal.fire(
-      'Se ha desactivado',
-      'Su conexión esta desactivada',
-      'success'
-    )
+            axios
+              .put("http://localhost:8191/editarConnections/" + number, con)
+              .catch(err => {
+                console.log(err);
+                return null;
+              });
 
-      reloadPage();
-  }
-})
+            Swal.fire(
+              "Se ha desactivado",
+              "Su conexión esta desactivada",
+              "success"
+            );
 
+            reloadPage();
+          }
+        });
     },
 
     CheckConnections: async function(number) {
@@ -187,39 +188,34 @@ this.$swal.fire({
 
       if (checkTest.data instanceof Array) {
         if (checkTest.data.length < 1) {
-this.$swal.fire({
-  position: 'top-end',
-  icon: 'error',
-  title: 'Oops... No se ha podido conectar',
-  text: 'Algo ha salido mal!',
-  showConfirmButton: false,
-  timer: 2000
-})
-
+          this.$swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "Oops... No se ha podido conectar",
+            text: "Algo ha salido mal!",
+            showConfirmButton: false,
+            timer: 2000
+          });
         } else {
-var text = "Se ha establecido conexión con " + connection.alias;
+          var text = "Se ha establecido conexión con " + connection.alias;
 
-  this.$swal.fire({
-  position: 'top-end',
-  icon: 'success',
-  title: text,
-  showConfirmButton: false,
-  timer: 2100
-})
+          this.$swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: text,
+            showConfirmButton: false,
+            timer: 2100
+          });
         }
       }
     },
-    reloadPage(){
-  location.reload(true);
+    reloadPage() {
+      location.reload(true);
     },
-    showAlert(passWord){
-            // Use sweetalret2
-            this.$swal.fire(
-  'Password',
-  passWord,
-  'info'
-)
-        }
+    showAlert(passWord) {
+      // Use sweetalret2
+      this.$swal.fire("Password", passWord, "info");
+    }
   }
 };
 </script>
