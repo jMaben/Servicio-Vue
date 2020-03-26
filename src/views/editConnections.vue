@@ -59,6 +59,11 @@
 
 
 <script>
+import Vue from "vue";
+import VueSweetalert2 from "vue-sweetalert2";
+
+Vue.use(VueSweetalert2);
+
 import axios from "axios";
 import http from "http";
 var comp = false;
@@ -109,18 +114,30 @@ export default {
       Object.setPrototypeOf(prueba, null);
       Object.setPrototypeOf(ob, null);
 
-      console.log(ob);
-      if (comp == true) {
+var errorText = "";
+      var fields = true;
+
+      if (comp == false) {
+        errorText = errorText + "\n El type es obligatorio";
+        fields = false;
+      }
+
+      if (fields == true) {
         axios
           .put("http://localhost:8191/editarConnections/" + this.idvalor, ob)
           .catch(err => {
             console.log(err);
             return null;
           });
-        alert("Se han actualizado los cambios");
+        var textWell = "Se ha actualizado la conexión " + ob.alias;
+        this.$swal.fire(
+          textWell,
+          "",
+          "success"
+        );
         this.$router.push("/connections");
       } else {
-        alert("Introduce un Type");
+        this.$swal.fire("Introduce bien los datos", errorText, "error");
       }
     },
 
@@ -128,6 +145,10 @@ export default {
       comp = true;
       this.id = event.target.value;
       console.log(this.id);
+    },
+        showAlert() {
+      // Use sweetalret2
+      this.$swal.fire("MyModal");
     }
   }
 };
