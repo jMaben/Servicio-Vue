@@ -14,9 +14,6 @@
       crossorigin="anonymous"
     />
 
-    <button v-on:click="showAlert">Hello world</button>
-
-
     <h1>Connections</h1>
     <a href="/formConnections" class="btn btn-success">
       <i class="fas fa-plus-circle"></i> Nuevo
@@ -49,7 +46,9 @@
               <strong>{{ post.user }}</strong>
             </td>
             <td>
+              <button title="ShowPass" @click="showAlert(post.pass)" class="btn btn-dark">
               <i class="fas fa-asterisk"></i>
+              </button>
             </td>
             <td>
               <strong>{{ post.alias }}</strong>
@@ -119,15 +118,24 @@ export default {
     },
 
     EliminarConnections: async function(number) {
-      console.log(number);
+      //console.log(number);
       const connec = await axios.get(
         "http://localhost:8191/verConnections/" + number
       );
-
-      console.log(connec.data);
-
-      if (confirm("¿Seguro que desea desactivar la conexion?")) {
         var con = connec.data;
+        var title = "¿Seguro que desea desactivar " + con.alias + " ?";
+      //console.log(connec.data);
+
+this.$swal.fire({
+  title: title,
+  text: "Se desactivara la conexón!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Desactivar'
+}).then((result) => {
+  if (result.value) {
         con.active = false;
 
         axios
@@ -136,19 +144,27 @@ export default {
             console.log(err);
             return null;
           });
-        alert("Se ha desactivado");
-        location.reload(true);
-      }
+    
+    Swal.fire(
+      'Se ha desactivado',
+      'Su conexión esta desactivada',
+      'success'
+    )
+
+      reloadPage();
+  }
+})
+
     },
 
     CheckConnections: async function(number) {
-      //console.log(number);
+      console.log(number);
       const connec = await axios.get(
         "http://localhost:8191/verConnections/" + number
       );
 
       const connection = connec.data;
-      //console.log(connection);
+      console.log(connection);
 
       var config = {
         headers: { "Access-Control-Allow-Origin": "*" }
@@ -181,7 +197,7 @@ this.$swal.fire({
 })
 
         } else {
-var text = "Se ha establecido conexión con "+ connection.alias;
+var text = "Se ha establecido conexión con " + connection.alias;
 
   this.$swal.fire({
   position: 'top-end',
@@ -193,17 +209,16 @@ var text = "Se ha establecido conexión con "+ connection.alias;
         }
       }
     },
-    showAlert(){
+    reloadPage(){
+  location.reload(true);
+    },
+    showAlert(passWord){
             // Use sweetalret2
-            //this.$swal('Hello Vue world!!!');
-            this.$swal.fire({
-  position: 'top-end',
-  icon: 'success',
-  title: 'Your work has been saved',
-  showConfirmButton: false,
-  timer: 2100
-})
-
+            this.$swal.fire(
+  'Password',
+  passWord,
+  'info'
+)
         }
   }
 };
