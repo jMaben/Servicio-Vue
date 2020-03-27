@@ -152,10 +152,10 @@ export default {
               "Su conexión esta desactivada",
               "success"
             );
-
-            reloadPage();
+                  location.reload(true);
           }
         });
+
     },
 
     CheckConnections: async function(number) {
@@ -208,9 +208,6 @@ export default {
           });
         }
       }
-    },
-    reloadPage() {
-      location.reload(true);
     },
     showAlert(passWord) {
       // Use sweetalret2
