@@ -152,6 +152,7 @@ location.reload(true);
               "Su conexión esta desactivada",
               "success"
             );
+
           }
         });
 

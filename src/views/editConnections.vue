@@ -136,6 +136,9 @@ var errorText = "";
           "success"
         );
         this.$router.push("/connections");
+        setTimeout(function(){
+            location.reload(true);
+          }, 3000);
       } else {
         this.$swal.fire("Introduce bien los datos", errorText, "error");
       }
