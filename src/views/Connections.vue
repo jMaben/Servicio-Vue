@@ -146,13 +146,12 @@ export default {
                 console.log(err);
                 return null;
               });
-
+location.reload(true);
             Swal.fire(
               "Se ha desactivado",
               "Su conexión esta desactivada",
               "success"
             );
-                  location.reload(true);
           }
         });
 
