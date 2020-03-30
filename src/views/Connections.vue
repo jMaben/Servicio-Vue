@@ -106,7 +106,7 @@ export default {
     };
   },
   mounted() {
-    axios.get("http://localhost:8191/listar").then(response => {
+    axios.get("http://localhost:8888/api/connections/listar").then(response => {
       this.post = response.data;
     });
   },
@@ -120,7 +120,7 @@ export default {
     EliminarConnections: async function(number) {
       //console.log(number);
       const connec = await axios.get(
-        "http://localhost:8191/verConnections/" + number
+        "http://localhost:8888/api/connections/verConnections/" + number
       );
       var con = connec.data;
       var title = "¿Seguro que desea desactivar " + con.alias + " ?";
@@ -141,7 +141,7 @@ export default {
             con.active = false;
 
             axios
-              .put("http://localhost:8191/editarConnections/" + number, con)
+              .put("http://localhost:8888/api/connections/editarConnections/" + number, con)
               .catch(err => {
                 console.log(err);
                 return null;
@@ -161,7 +161,7 @@ location.reload(true);
     CheckConnections: async function(number) {
       console.log(number);
       const connec = await axios.get(
-        "http://localhost:8191/verConnections/" + number
+        "http://localhost:8888/api/connections/verConnections/" + number
       );
 
       const connection = connec.data;
@@ -172,7 +172,7 @@ location.reload(true);
       };
 
       const checkTest = await axios.get(
-        "http://localhost:8888/sql/tables/" +
+        "http://localhost:8888/api/dbsql/sql/tables/" +
           connection.host +
           "/" +
           connection.port +

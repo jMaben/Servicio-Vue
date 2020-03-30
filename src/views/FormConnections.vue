@@ -84,7 +84,7 @@ export default {
     };
   },
   created() {
-    axios.get("http://localhost:8191/listarTypes").then(response => {
+    axios.get("http://localhost:8888/api/connections/listarTypes/").then(response => {
       this.ltypes = response.data;
     });
   },
@@ -137,7 +137,7 @@ export default {
 
       if (fields == true) {
         axios
-          .post("http://localhost:8191/crearConnections", connec)
+          .post("http://localhost:8888/api/connections/crearConnections/", connec)
           .catch(err => {
             console.log(err);
             return null;

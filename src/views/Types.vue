@@ -49,7 +49,7 @@ export default {
     }
   },
 mounted() {
-  axios.get('http://localhost:8191/listarTypes')
+  axios.get('http://localhost:8888/api/connections/listarTypes')
   .then(response =>{
     this.post = response.data;
   })

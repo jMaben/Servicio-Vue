@@ -52,7 +52,7 @@ export default {
     }
   },
 mounted() {
-  axios.get('http://localhost:8191/listarMetadates')
+  axios.get('http://localhost:8888/api/connections/listarMetadates')
   .then(response =>{
     this.post = response.data;
   })

@@ -85,12 +85,12 @@ export default {
     };
   },
   created() {
-    axios.get("http://localhost:8191/listarTypes").then(response => {
+    axios.get("http://localhost:8888/api/connections/listarTypes").then(response => {
       this.types = response.data;
     });
 
     axios
-      .get("http://localhost:8191/verConnections/" + parseInt(this.idvalor))
+      .get("http://localhost:8888/api/connections/verConnections/" + parseInt(this.idvalor))
       .then(response => {
         this.connec = response.data;
       });
@@ -124,7 +124,7 @@ var errorText = "";
 
       if (fields == true) {
         axios
-          .put("http://localhost:8191/editarConnections/" + this.idvalor, ob)
+          .put("http://localhost:8888/api/connections/editarConnections/" + this.idvalor, ob)
           .catch(err => {
             console.log(err);
             return null;
