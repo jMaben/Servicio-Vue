@@ -141,21 +141,23 @@ export default {
             con.active = false;
 
             axios
-              .put("http://localhost:8888/api/connections/editarConnections/" + number, con)
+              .put(
+                "http://localhost:8888/api/connections/editarConnections/" +
+                  number,
+                con
+              )
               .catch(err => {
                 console.log(err);
                 return null;
               });
-location.reload(true);
+            location.reload(true);
             Swal.fire(
               "Se ha desactivado",
               "Su conexión esta desactivada",
               "success"
             );
-
           }
         });
-
     },
 
     CheckConnections: async function(number) {
@@ -171,23 +173,35 @@ location.reload(true);
         headers: { "Access-Control-Allow-Origin": "*" }
       };
 
-      const checkTest = await axios.get(
-        "http://localhost:8888/api/dbsql/sql/tables/" +
-          connection.host +
-          "/" +
-          connection.port +
-          "/" +
-          connection.user +
-          "/" +
-          connection.pass +
-          "/" +
-          connection.alias,
-        config
-      );
-      console.log(checkTest);
+      const checkTest = await axios
+        .get(
+          "http://localhost:8888/api/dbsql/sql/tables/" +
+            connection.host +
+            "/" +
+            connection.port +
+            "/" +
+            connection.user +
+            "/" +
+            connection.pass +
+            "/" +
+            connection.alias,
+          config
+        )
+        .then(response => {
+          if (response.status == 200) {
+            var text = "Se ha establecido conexión con " + connection.alias;
 
-      if (checkTest.data instanceof Array) {
-        if (checkTest.data.length < 1) {
+            this.$swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: text,
+              showConfirmButton: false,
+              timer: 2100
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
           this.$swal.fire({
             position: "top-end",
             icon: "error",
@@ -196,18 +210,8 @@ location.reload(true);
             showConfirmButton: false,
             timer: 2000
           });
-        } else {
-          var text = "Se ha establecido conexión con " + connection.alias;
-
-          this.$swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: text,
-            showConfirmButton: false,
-            timer: 2100
-          });
-        }
-      }
+        });
+      console.log(checkTest);
     },
     showAlert(passWord) {
       // Use sweetalret2
