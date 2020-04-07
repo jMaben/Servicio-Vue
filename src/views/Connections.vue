@@ -106,7 +106,10 @@ export default {
     };
   },
   mounted() {
-    axios.get("http://localhost:8888/api/connections/listar").then(response => {
+    var config = {
+        headers: {'Access-Control-Allow-Origin': '*'}
+      };
+    axios.get("http://localhost:8888/api/connections/listar",config).then(response => {
       this.post = response.data;
     });
   },
