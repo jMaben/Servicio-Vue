@@ -237,29 +237,37 @@ export default {
       const metadate = meta.data;
       console.log(metadate);
 
-      const select = await axios.get(
-        "http://localhost:8888/api/dbsql/sql/allOfTable/" +
-          connection.host +
-          "/" +
-          connection.port +
-          "/" +
-          connection.user +
-          "/" +
-          connection.pass +
-          "/" +
-          connection.alias +
-          "/" +
-          metadate.metadate,
-        config
-      );
-      console.log(select);
+      const select = await axios
+        .get(
+          "http://localhost:8888/api/dbsql/sql/allOfTable/" +
+            connection.host +
+            "/" +
+            connection.port +
+            "/" +
+            connection.user +
+            "/" +
+            connection.pass +
+            "/" +
+            connection.alias +
+            "/" +
+            metadate.metadate,
+          config
+        )
+        .catch(err => {
+          console.log(err);
+          this.$swal.fire(
+            "Error al cargar",
+            "No se ha podido cargar los datos",
+            "warning"
+          );
+        });
+
       if (
         typeof select.data.columns != "undefined" &&
         select.data.columns != null &&
         select.data.columns.length != null &&
         select.data.columns.length > 0
       ) {
-        // array exists and is not empty
         //Alert
         const text = JSON.stringify(select.data);
         this.$swal.fire("Select", text, "info");
