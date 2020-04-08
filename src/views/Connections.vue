@@ -79,6 +79,7 @@
               <button title="Eliminar" @click="EliminarConnections(post.id)" class="btn btn-danger">
                 <i class="fas fa-trash-alt"></i>
               </button>
+              <button title="select" @click="SelectConnection(post.id)" class="btn btn-info">Select</button>
             </td>
           </tr>
         </tbody>
@@ -107,11 +108,13 @@ export default {
   },
   mounted() {
     var config = {
-        headers: {'Access-Control-Allow-Origin': '*'}
-      };
-    axios.get("http://localhost:8888/api/connections/listar",config).then(response => {
-      this.post = response.data;
-    });
+      headers: { "Access-Control-Allow-Origin": "*" }
+    };
+    axios
+      .get("http://localhost:8888/api/connections/listar", config)
+      .then(response => {
+        this.post = response.data;
+      });
   },
   methods: {
     EditarConnections(number) {
@@ -215,6 +218,45 @@ export default {
           });
         });
       console.log(checkTest);
+    },
+    SelectConnection: async function(number) {
+      var config = {
+        headers: { "Access-Control-Allow-Origin": "*" }
+      };
+      const connec = await axios.get(
+        "http://localhost:8888/api/connections/verConnections/" + number,
+        config
+      );
+      const connection = connec.data;
+      //DE AQUI HAY QUE SACAR EL ID DEL METADATO RELACIONADO
+      //http://localhost:8888/api/connections/verMetadates/[1] ese dato esta a pelo
+      const meta = await axios.get(
+        "http://localhost:8888/api/connections/verMetadates/1",
+        config
+      );
+      const metadate = meta.data;
+      console.log(metadate);
+
+            const select = await axios.get(
+        "http://localhost:8888/api/dbsql/sql/allOfTable/"
+         +
+            connection.host +
+            "/" +
+            connection.port +
+            "/" +
+            connection.user +
+            "/" +
+            connection.pass +
+            "/" +
+            connection.alias +
+            "/" +
+            metadate.metadate,
+        config
+      );
+            console.log(select);
+      //Alert
+      const text = JSON.stringify(select.data)
+      this.$swal.fire("Select", text, "info");
     },
     showAlert(passWord) {
       // Use sweetalret2
