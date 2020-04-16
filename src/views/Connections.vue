@@ -98,6 +98,7 @@ import VueSweetalert2 from "vue-sweetalert2";
 Vue.use(VueSweetalert2);
 
 import axios from "axios";
+
 export default {
   name: "app",
   data() {
@@ -228,55 +229,80 @@ export default {
         config
       );
       const connection = connec.data;
-      //DE AQUI HAY QUE SACAR EL ID DEL METADATO RELACIONADO
-      //http://localhost:8888/api/connections/verMetadates/[1] ese dato esta a pelo
+
       const meta = await axios.get(
-        "http://localhost:8888/api/connections/verMetadates/1",
+        "http://localhost:8888/api/connections/table/" + connection.id,
         config
       );
-      const metadate = meta.data;
+
+      var metadate = meta.data;
       console.log(metadate);
 
-      const select = await axios
-        .get(
-          "http://localhost:8888/api/dbsql/sql/allOfTable/" +
-            connection.host +
-            "/" +
-            connection.port +
-            "/" +
-            connection.user +
-            "/" +
-            connection.pass +
-            "/" +
-            connection.alias +
-            "/" +
-            metadate.metadate,
-          config
-        )
-        .catch(err => {
-          console.log(err);
-          this.$swal.fire(
-            "Error al cargar",
-            "No se ha podido cargar los datos",
-            "warning"
-          );
+      var options = [];
+      for (var i = 0; i < metadate.length; i++) {
+        options.push(metadate[i].metadate);
+      }
+
+      var option;
+      this.$swal
+        .fire({
+          title: "Consulta la tabla",
+          input: "select",
+          inputOptions: options,
+          inputPlaceholder: "Seleccione una opcion",
+          showCancelButton: true,
+          inputValidator: function(value) {
+            console.log(value);
+            option = value;
+          }
+        })
+        .then(function(result) {
+          select(options, option);
         });
 
-      if (
-        typeof select.data.columns != "undefined" &&
-        select.data.columns != null &&
-        select.data.columns.length != null &&
-        select.data.columns.length > 0
-      ) {
-        //Alert
-        const text = JSON.stringify(select.data);
-        this.$swal.fire("Select", text, "info");
-      } else {
-        this.$swal.fire(
-          "Error al cargar",
-          "No se ha podido cargar los datos",
-          "warning"
-        );
+      async function select(array, number) {
+        var config = {
+          headers: { "Access-Control-Allow-Origin": "*" }
+        };
+        console.log(array);
+        console.log(number);
+        const select = await axios
+          .get(
+            "http://localhost:8888/api/dbsql/sql/allOfTable/" +
+              connection.host +
+              "/" +
+              connection.port +
+              "/" +
+              connection.user +
+              "/" +
+              connection.pass +
+              "/" +
+              connection.alias +
+              "/" +
+              array[number],
+            config
+          )
+          .catch(err => {
+            console.log(err);
+            this.$swal.fire(
+              "Error al cargar",
+              "No se ha podido cargar los datos",
+              "warning"
+            );
+          });
+
+        if (
+          typeof select.data.columns != "undefined" &&
+          select.data.columns != null &&
+          select.data.columns.length != null &&
+          select.data.columns.length > 0
+        ) {
+          //Alert
+          const text = JSON.stringify(select.data);
+          alert(text);
+        } else {
+          alert("No se ha podido cargar los datos");
+        }
       }
     },
     showAlert(passWord) {
