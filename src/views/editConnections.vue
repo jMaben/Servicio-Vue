@@ -85,12 +85,12 @@ export default {
     };
   },
   created() {
-    axios.get("http://localhost:8888/api/connections/listarTypes").then(response => {
+    axios.get("http://localhost:8090/api/connections/findAllTypes").then(response => {
       this.types = response.data;
     });
 
     axios
-      .get("http://localhost:8888/api/connections/verConnections/" + parseInt(this.idvalor))
+      .get("http://localhost:8090/api/connections/findConnectionById/" + parseInt(this.idvalor))
       .then(response => {
         this.connec = response.data;
       });
@@ -121,10 +121,11 @@ var errorText = "";
         errorText = errorText + "\n El type es obligatorio";
         fields = false;
       }
-
+      console.log(ob.types.id);
+      console.log(ob);
       if (fields == true) {
         axios
-          .put("http://localhost:8888/api/connections/editarConnections/" + this.idvalor, ob)
+          .put("http://localhost:8090/api/connections/updateConnection/"+this.idvalor+"/type/"+ob.types.id, ob)
           .catch(err => {
             console.log(err);
             return null;

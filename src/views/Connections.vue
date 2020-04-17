@@ -60,7 +60,7 @@
               <i class="far fa-circle"></i>
             </td>
             <td>{{ post.types.type }}</td>
-            <td>{{ post.createdData }}</td>
+            <td>{{ post.createDate }}</td>
             <td class="text-centre">
               <button
                 title="Comprobar conexion"
@@ -112,7 +112,7 @@ export default {
       headers: { "Access-Control-Allow-Origin": "*" }
     };
     axios
-      .get("http://localhost:8888/api/connections/listar", config)
+      .get("http://localhost:8090/api/connections/findAllConnections", config)
       .then(response => {
         this.post = response.data;
       });
@@ -127,7 +127,7 @@ export default {
     EliminarConnections: async function(number) {
       //console.log(number);
       const connec = await axios.get(
-        "http://localhost:8888/api/connections/verConnections/" + number
+        "http://localhost:8090/api/connections/findConnectionById/" + number
       );
       var con = connec.data;
       var title = "¿Seguro que desea desactivar " + con.alias + " ?";
@@ -146,11 +146,10 @@ export default {
         .then(result => {
           if (result.value) {
             con.active = false;
-
             axios
               .put(
-                "http://localhost:8888/api/connections/editarConnections/" +
-                  number,
+                "http://localhost:8090/api/connections/updateConnection/"+number+"/type/" +
+                  con.types.id,
                 con
               )
               .catch(err => {
@@ -158,7 +157,7 @@ export default {
                 return null;
               });
             location.reload(true);
-            Swal.fire(
+            this.$swal.fire(
               "Se ha desactivado",
               "Su conexión esta desactivada",
               "success"
@@ -170,7 +169,7 @@ export default {
     CheckConnections: async function(number) {
       console.log(number);
       const connec = await axios.get(
-        "http://localhost:8888/api/connections/verConnections/" + number
+        "http://localhost:8090/api/connections/findConnectionById/" + number
       );
 
       const connection = connec.data;
@@ -182,7 +181,7 @@ export default {
 
       const checkTest = await axios
         .get(
-          "http://localhost:8888/api/dbsql/sql/tables/" +
+          "http://localhost:8090/api/dbsql/sql/tables/" +
             connection.host +
             "/" +
             connection.port +
@@ -225,13 +224,13 @@ export default {
         headers: { "Access-Control-Allow-Origin": "*" }
       };
       const connec = await axios.get(
-        "http://localhost:8888/api/connections/verConnections/" + number,
+        "http://localhost:8090/api/connections/findConnectionById/" + number,
         config
       );
       const connection = connec.data;
 
       const meta = await axios.get(
-        "http://localhost:8888/api/connections/table/" + connection.id,
+        "http://localhost:8090/api/connections/table/" + connection.id,
         config
       );
 
@@ -268,7 +267,7 @@ export default {
         console.log(number);
         const select = await axios
           .get(
-            "http://localhost:8888/api/dbsql/sql/allOfTable/" +
+            "http://localhost:8090/api/dbsql/sql/allOfTable/" +
               connection.host +
               "/" +
               connection.port +
