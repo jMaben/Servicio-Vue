@@ -230,7 +230,7 @@ export default {
       const connection = connec.data;
 
       const meta = await axios.get(
-        "http://localhost:8090/api/connections/table/" + connection.id,
+        "http://localhost:8090/api/connections/findConnectionsMetadatesById/" + connection.id,
         config
       );
 
@@ -239,7 +239,7 @@ export default {
 
       var options = [];
       for (var i = 0; i < metadate.length; i++) {
-        options.push(metadate[i].metadate);
+        options.push(metadate[i].meta);
       }
 
       var option;
