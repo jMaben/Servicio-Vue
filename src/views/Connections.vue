@@ -219,7 +219,7 @@ export default {
         });
       console.log(checkTest);
     },
-    SelectConnection: async function(number) {
+SelectConnection: async function(number) {
       var config = {
         headers: { "Access-Control-Allow-Origin": "*" }
       };
@@ -228,20 +228,21 @@ export default {
         config
       );
       const connection = connec.data;
-
-      const meta = await axios.get(
-        "http://localhost:8090/api/connections/findConnectionsMetadatesById/" + connection.id,
-        config
-      );
-
-      var metadate = meta.data;
-      console.log(metadate);
-
-      var options = [];
-      for (var i = 0; i < metadate.length; i++) {
-        options.push(metadate[i].meta);
+      const tempConnMeta = await axios.get('http://localhost:8090/api/connections/findAllConnectionsMetadates');
+      const checkConnMeta = tempConnMeta.data;
+      const metadates = [];
+      console.log(checkConnMeta[0].connection);
+      for(var i = 0; i < checkConnMeta.length; i++){
+        if(JSON.stringify(checkConnMeta[i].connection) === JSON.stringify(connection)){
+          metadates.push(checkConnMeta[i].metadates);
+        }
       }
-
+      var options = [];
+      for (var j = 0; j < metadates.length; j++) {
+        if(metadates[j].level == 1){
+          options.push(metadates[j].meta);
+        }
+      }
       var option;
       this.$swal
         .fire({
@@ -255,10 +256,9 @@ export default {
             option = value;
           }
         })
-        .then(function(result) {
-          select(options, option);
+        .then(function() {
+          select(options, option, number);
         });
-
       async function select(array, number) {
         var config = {
           headers: { "Access-Control-Allow-Origin": "*" }
@@ -267,7 +267,7 @@ export default {
         console.log(number);
         const select = await axios
           .get(
-            "http://localhost:8090/api/dbsql/sql/allOfTable/" +
+            "http://localhost:8090/api/dbsql/dbsql/allOfTable/" +
               connection.host +
               "/" +
               connection.port +
@@ -283,13 +283,12 @@ export default {
           )
           .catch(err => {
             console.log(err);
-            this.$swal.fire(
+            Swal.fire(
               "Error al cargar",
               "No se ha podido cargar los datos",
               "warning"
             );
           });
-
         if (
           typeof select.data.columns != "undefined" &&
           select.data.columns != null &&
@@ -299,11 +298,72 @@ export default {
           //Alert
           const text = JSON.stringify(select.data);
           alert(text);
+          insertData(select.data, connection);
         } else {
           alert("No se ha podido cargar los datos");
         }
       }
+      function insertData(text, connection){
+        var columns = text.columns;
+        var fieldsNames = [];
+        var exist = false;
+        for(var i = 0; i < columns.length; i++){
+          exist = false;
+          for(var j = 0; j < fieldsNames.length; j++){
+            if(fieldsNames[j] == columns[i].columnName || columns[i].columnName == "id"){
+              exist = true;
+            }
+          }
+          if(!exist && columns[i].columnName != "id"){
+            fieldsNames.push(columns[i].columnName);
+          }
+        }
+        var values = [];
+        for(var x = 0; x < columns.length; x++){
+          if(columns[x].columnName != "id"){
+            values.push(columns[x].value);
+          }
+        }
+        var indexName = 0;
+        var firstTime = true;
+        var tables = '';
+        var newTable = false;
+        for(var y = 0; y < values.length; y++){
+          if(firstTime){
+            firstTime = false;
+            tables = tables + '{ "name": "' + text.name + '", "fields": [';
+          }
+          if(newTable){
+            newTable=false;
+            tables = tables + ']},{ "name": "' + text.name + '", "fields": [';
+          }
+          if(indexName < fieldsNames.length){
+            if(indexName == 0){
+              tables = tables + '{"name": "' + fieldsNames[indexName] + '", "value": "' + values[y] + '"}'
+            }else{
+              tables = tables + ',{"name": "' + fieldsNames[indexName] + '", "value": "' + values[y] + '"}'
+            }
+          }
+          indexName++;
+          if(indexName == fieldsNames.length && y != values.length){
+            newTable = true;
+            indexName = 0;
+          }
+        }
+        tables = tables + ']}';
+        var send = {
+          'host': connection.host,
+          'alias': connection.alias,
+          'user': connection.user,
+          'pass': connection.pass,
+          'port': parseInt(connection.port),
+          'tables': JSON.parse('['+tables+']')
+        };
+        console.log(send)
+        axios.post('http://localhost:8090/api/dbsql/dbsql/insertElements',send);
+      }
     },
+    
     showAlert(passWord) {
       // Use sweetalret2
       this.$swal.fire("Password", passWord, "info");
