@@ -181,16 +181,16 @@ export default {
 
       const checkTest = await axios
         .get(
-          "http://localhost:8090/api/dbsql/sql/tables/" +
+          "http://localhost:8090/api/dbsql/dbsql/findAllTables/" +
             connection.host +
             "/" +
-            connection.port +
+            connection.alias +
             "/" +
             connection.user +
             "/" +
             connection.pass +
             "/" +
-            connection.alias,
+            connection.port,
           config
         )
         .then(response => {
