@@ -24,7 +24,7 @@
               </div>
             </div>
             <div class="card-footer">
-                <div class="form-group">
+              <div class="form-group">
                 <label>Destino</label>
                 <select class="form-control" @change="saveDestino($event)">
                   <option value selected disabled>Conexión</option>
@@ -62,7 +62,7 @@ export default {
     };
   },
   created() {
-      var response = [];
+    var response = [];
     var config = {
       headers: { "Access-Control-Allow-Origin": "*" }
     };
@@ -74,22 +74,30 @@ export default {
   },
   methods: {
     Submit: async function() {
-        console.log(idOrigen);
-        console.log(nameOrigen);
+      console.log(idOrigen);
+      console.log(nameOrigen);
 
-        console.log("--------------");
+      console.log("--------------");
 
-        console.log(idDestino);
-        console.log(nameDestino);
+      console.log(idDestino);
+      console.log(nameDestino);
 
-    if(idOrigen!=0 && idDestino!=0){
-var config = {
+      if (idOrigen != 0 && idDestino != 0) {
+        var config = {
           headers: { "Access-Control-Allow-Origin": "*" }
         };
 
-      const connecOrigen = await axios.get(
-        "http://localhost:8090/api/connections/findConnectionById/" + idOrigen, config
-      );
+        const connecOrigen = await axios.get(
+          "http://localhost:8090/api/connections/findConnectionById/" +
+            idOrigen,
+          config
+        );
+
+        const connecDestino = await axios.get(
+          "http://localhost:8090/api/connections/findConnectionById/" +
+            idDestino,
+          config
+        );
 
         const connection = connecOrigen.data;
         const select = await axios
@@ -125,35 +133,114 @@ var config = {
           //Alert
           const text = JSON.stringify(select.data);
           alert(text);
-          //insertData(select.data, connection);
+          insertData(select.data, connecDestino.data);
         } else {
           alert("No se ha podido cargar los datos");
         }
-
-    }else{
+      } else {
         this.$swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: "Faltan datos",
-            text: "Debes seleccionar todos los campos",
-            showConfirmButton: false,
-            timer: 2000
+          position: "top-end",
+          icon: "error",
+          title: "Faltan datos",
+          text: "Debes seleccionar todos los campos",
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+
+      function insertData(text, connection) {
+        text.name = nameDestino;
+        console.log(text);
+        var columns = text.columns;
+        var fieldsNames = [];
+        var exist = false;
+        for (var i = 0; i < columns.length; i++) {
+          exist = false;
+          for (var j = 0; j < fieldsNames.length; j++) {
+            if (
+              fieldsNames[j] == columns[i].columnName ||
+              columns[i].columnName == "id"
+            ) {
+              exist = true;
+            }
+          }
+          if (!exist && columns[i].columnName != "id") {
+            fieldsNames.push(columns[i].columnName);
+          }
+        }
+        var values = [];
+        for (var x = 0; x < columns.length; x++) {
+          if (columns[x].columnName != "id") {
+            values.push(columns[x].value);
+          }
+        }
+        var indexName = 0;
+        var firstTime = true;
+        var tables = "";
+        var newTable = false;
+        for (var y = 0; y < values.length; y++) {
+          if (firstTime) {
+            firstTime = false;
+            tables = tables + '{ "name": "' + text.name + '", "fields": [';
+          }
+          if (newTable) {
+            newTable = false;
+            tables = tables + ']},{ "name": "' + text.name + '", "fields": [';
+          }
+          if (indexName < fieldsNames.length) {
+            if (indexName == 0) {
+              tables =
+                tables +
+                '{"name": "' +
+                fieldsNames[indexName] +
+                '", "value": "' +
+                values[y] +
+                '"}';
+            } else {
+              tables =
+                tables +
+                ',{"name": "' +
+                fieldsNames[indexName] +
+                '", "value": "' +
+                values[y] +
+                '"}';
+            }
+          }
+          indexName++;
+          if (indexName == fieldsNames.length && y != values.length) {
+            newTable = true;
+            indexName = 0;
+          }
+        }
+        tables = tables + "]}";
+        var send = {
+          host: connection.host,
+          alias: connection.alias,
+          user: connection.user,
+          pass: connection.pass,
+          port: parseInt(connection.port),
+          tables: JSON.parse("[" + tables + "]")
+        };
+        console.log(send);
+        axios
+          .post("http://localhost:8090/api/dbsql/dbsql/insertElements", send)
+          .then(response => {
+          if (response.status == 200) {
+            alert("Los datos se han introducido correctamente")
+          }
+        })
+          .catch(err => {
+            console.log(err);
+            alert("Error al cargar");
           });
-    }
-
-        
-
-
-
-
-
+      }
     },
     saveOrigen: async function(event) {
       //origenComp = true;
       idOrigen = event.target.value;
-        console.log(idOrigen);
+      console.log(idOrigen);
 
-         var config = {
+      var config = {
         headers: { "Access-Control-Allow-Origin": "*" }
       };
       const connec = await axios.get(
@@ -163,43 +250,47 @@ var config = {
 
       const connection = connec.data;
       console.log(connection);
-      const tempConnMeta = await axios.get('http://localhost:8090/api/connections/findAllConnectionsMetadates');
+      const tempConnMeta = await axios.get(
+        "http://localhost:8090/api/connections/findAllConnectionsMetadates"
+      );
       const checkConnMeta = tempConnMeta.data;
       const metadates = [];
       console.log(checkConnMeta[0].connection);
-      for(var i = 0; i < checkConnMeta.length; i++){
-        if(JSON.stringify(checkConnMeta[i].connection) === JSON.stringify(connection)){
+      for (var i = 0; i < checkConnMeta.length; i++) {
+        if (
+          JSON.stringify(checkConnMeta[i].connection) ===
+          JSON.stringify(connection)
+        ) {
           metadates.push(checkConnMeta[i].metadates);
         }
       }
       var options = [];
       for (var j = 0; j < metadates.length; j++) {
-        if(metadates[j].level == 1){
+        if (metadates[j].level == 1) {
           options.push(metadates[j].meta);
         }
       }
 
       var option;
-      this.$swal
-        .fire({
-          title: "Eliga una tabla",
-          input: "select",
-          inputOptions: options,
-          inputPlaceholder: "Seleccione una opcion",
-          showCancelButton: true,
-          inputValidator: function(value) {
-            option = value;
-            nameOrigen = options[option];
-            console.log(options[option]);
-          }
-        });
+      this.$swal.fire({
+        title: "Eliga una tabla",
+        input: "select",
+        inputOptions: options,
+        inputPlaceholder: "Seleccione una opcion",
+        showCancelButton: true,
+        inputValidator: function(value) {
+          option = value;
+          nameOrigen = options[option];
+          console.log(options[option]);
+        }
+      });
     },
     saveDestino: async function(event) {
       //origenComp = true;
       idDestino = event.target.value;
-        console.log(idOrigen);
+      console.log(idOrigen);
 
-         var config = {
+      var config = {
         headers: { "Access-Control-Allow-Origin": "*" }
       };
       const connec = await axios.get(
@@ -209,36 +300,40 @@ var config = {
 
       const connection = connec.data;
       console.log(connection);
-      const tempConnMeta = await axios.get('http://localhost:8090/api/connections/findAllConnectionsMetadates');
+      const tempConnMeta = await axios.get(
+        "http://localhost:8090/api/connections/findAllConnectionsMetadates"
+      );
       const checkConnMeta = tempConnMeta.data;
       const metadates = [];
       console.log(checkConnMeta[0].connection);
-      for(var i = 0; i < checkConnMeta.length; i++){
-        if(JSON.stringify(checkConnMeta[i].connection) === JSON.stringify(connection)){
+      for (var i = 0; i < checkConnMeta.length; i++) {
+        if (
+          JSON.stringify(checkConnMeta[i].connection) ===
+          JSON.stringify(connection)
+        ) {
           metadates.push(checkConnMeta[i].metadates);
         }
       }
       var options = [];
       for (var j = 0; j < metadates.length; j++) {
-        if(metadates[j].level == 1){
+        if (metadates[j].level == 1) {
           options.push(metadates[j].meta);
         }
       }
 
       var option;
-      this.$swal
-        .fire({
-          title: "Eliga una tabla",
-          input: "select",
-          inputOptions: options,
-          inputPlaceholder: "Seleccione una opcion",
-          showCancelButton: true,
-          inputValidator: function(value) {
-            option = value;
-            nameDestino = options[option];
-            console.log(options[option]);
-          }
-        });
+      this.$swal.fire({
+        title: "Eliga una tabla",
+        input: "select",
+        inputOptions: options,
+        inputPlaceholder: "Seleccione una opcion",
+        showCancelButton: true,
+        inputValidator: function(value) {
+          option = value;
+          nameDestino = options[option];
+          console.log(options[option]);
+        }
+      });
     },
     showAlert() {
       // Use sweetalret2
