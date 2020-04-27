@@ -34,6 +34,11 @@ const routes = [
     component: () => import( '../views/TypesGroups.vue')
   },
   {
+    path: '/connectionsData',
+    name: 'ConnectionsData',
+    component: () => import( '../views/ConnectionsData.vue')
+  },
+  {
     path: '/connections',
     name: 'Connections',
     component: () => import( '../views/Connections.vue'),

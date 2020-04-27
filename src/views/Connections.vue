@@ -18,6 +18,9 @@
     <a href="/formConnections" class="btn btn-success">
       <i class="fas fa-plus-circle"></i> Nuevo
     </a>
+        <a href="/connectionsData" class="btn btn-info">
+      <i class="fas fa-plus-circle"></i> Insertar Datos
+    </a>
     <p></p>
     <div class="post">
       <table class="table" style="margin: 0 auto;">
