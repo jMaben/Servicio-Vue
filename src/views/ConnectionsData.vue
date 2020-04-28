@@ -74,14 +74,6 @@ export default {
   },
   methods: {
     Submit: async function() {
-      console.log(idOrigen);
-      console.log(nameOrigen);
-
-      console.log("--------------");
-
-      console.log(idDestino);
-      console.log(nameDestino);
-
       if (idOrigen != 0 && idDestino != 0) {
         var config = {
           headers: { "Access-Control-Allow-Origin": "*" }
@@ -132,7 +124,7 @@ export default {
         ) {
           //Alert
           const text = JSON.stringify(select.data);
-          alert(text);
+          //alert(text);
           insertData(select.data, connecDestino.data);
         } else {
           alert("No se ha podido cargar los datos");
@@ -224,14 +216,13 @@ export default {
         console.log(send);
         axios
           .post("http://localhost:8090/api/dbsql/dbsql/insertElements", send)
-          .then(response => {
-          if (response.status == 200) {
-            alert("Los datos se han introducido correctamente")
-          }
-        })
           .catch(err => {
-            console.log(err);
-            alert("Error al cargar");
+            var r = confirm(
+              "Se ha insertado correctamente, desea ver lo insertado?"
+            );
+            if (r == true) {
+              alert(JSON.stringify(text));
+            }
           });
       }
     },
