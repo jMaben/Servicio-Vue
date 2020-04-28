@@ -216,13 +216,18 @@ export default {
         console.log(send);
         axios
           .post("http://localhost:8090/api/dbsql/dbsql/insertElements", send)
-          .catch(err => {
+                  .then(response => {
+          if (response.status == 201) {
             var r = confirm(
               "Se ha insertado correctamente, desea ver lo insertado?"
             );
             if (r == true) {
               alert(JSON.stringify(text));
             }
+          }
+        })
+          .catch(err => {
+            alert("No se ha podido ejecutar la inserción");
           });
       }
     },
