@@ -21,6 +21,13 @@
                   <option value selected disabled>Conexión</option>
                   <option v-for="post in post" v-bind:key="post.id" :value="post.id">{{post.alias}}</option>
                 </select>
+                <br />
+                <h5>{{tittleOrigen}} </h5>
+  <div v-for="tablenamesOrigen in tablenamesOrigen" v-bind:key="tablenamesOrigen" @click="saveTablenameOrigen($event)">
+    {{tablenamesOrigen}} 
+    <input type="checkbox" :value="tablenamesOrigen">
+  </div>
+
               </div>
             </div>
             <div class="card-footer">
@@ -30,11 +37,26 @@
                   <option value selected disabled>Conexión</option>
                   <option v-for="post in post" v-bind:key="post.id" :value="post.id">{{post.alias}}</option>
                 </select>
+
+                                <br />
+                <h5>{{tittleDestino}} </h5>
+  <div v-for="tablenamesDestino in tablenamesDestino" v-bind:key="tablenamesDestino" @click="saveTablenameDestino($event)">
+    {{tablenamesDestino}} 
+    <input type="checkbox" :value="tablenamesDestino">
+  </div>
               </div>
             </div>
           </div>
         </form>
         <button title="Guardar" @click="Submit()" class="btn btn-success">Insertar</button>
+        <br />
+            <br />
+        <h5><strong>{{infotittle}}</strong></h5>
+        <br />
+        <p>{{infoorigen}}</p>
+        <p>{{infodestino}}</p>
+        <h5>{{infodatos}} </h5>
+        <p>{{infotext}}</p>
       </div>
     </div>
   </div>
@@ -48,8 +70,6 @@ Vue.use(VueSweetalert2);
 
 import axios from "axios";
 import http from "http";
-var origenComp = false;
-var destinoComp = false;
 var nameOrigen = {};
 var nameDestino = {};
 var idOrigen = 0;
@@ -58,7 +78,17 @@ export default {
   name: "Data",
   data() {
     return {
-      post: []
+      post: [],
+      tablenamesOrigen: [],
+      tablenamesDestino: [],
+      tittleOrigen:null,
+      tittleDestino:null,
+        infotittle: null,
+        infoorigen: null,
+        infodestino: null,
+        infotext:null,
+        infodatos: null
+      
     };
   },
   created() {
@@ -125,9 +155,18 @@ export default {
           //Alert
           const text = JSON.stringify(select.data);
           //alert(text);
+              this.infotittle= "Informacion de inserción";
+             this.infoorigen= "Origen de los datos: " + nameOrigen;
+              this.infodestino= "Destino de los datos: " + nameDestino;
+              this.infodatos = "Texto de inserción:"
+              this.infotext= text;
           insertData(select.data, connecDestino.data);
         } else {
-          alert("No se ha podido cargar los datos");
+                      Swal.fire(
+              "Error al cargar",
+              "No se ha podido cargar los datos",
+              "warning"
+            );
         }
       } else {
         this.$swal.fire({
@@ -143,6 +182,7 @@ export default {
       function insertData(text, connection) {
         text.name = nameDestino;
         console.log(text);
+
         var columns = text.columns;
         var fieldsNames = [];
         var exist = false;
@@ -214,22 +254,24 @@ export default {
           tables: JSON.parse("[" + tables + "]")
         };
         console.log(send);
+
         axios
           .post("http://localhost:8090/api/dbsql/dbsql/insertElements", send)
-                  .then(response => {
-          if (response.status == 201) {
-            var r = confirm(
-              "Se ha insertado correctamente, desea ver lo insertado?"
-            );
-            if (r == true) {
-              alert(JSON.stringify(text));
+          .then(response => {
+            if (response.status == 201) {
+                            alert("bien");
             }
-          }
-        })
+          })
           .catch(err => {
-            alert("No se ha podido ejecutar la inserción");
+          alert("mal");
           });
       }
+    },
+    saveTablenameOrigen(event){
+      nameOrigen = event.target.value;
+    },
+    saveTablenameDestino(event){
+      nameDestino = event.target.value;
     },
     saveOrigen: async function(event) {
       //origenComp = true;
@@ -261,25 +303,14 @@ export default {
         }
       }
       var options = [];
+
       for (var j = 0; j < metadates.length; j++) {
         if (metadates[j].level == 1) {
           options.push(metadates[j].meta);
         }
       }
-
-      var option;
-      this.$swal.fire({
-        title: "Eliga una tabla",
-        input: "select",
-        inputOptions: options,
-        inputPlaceholder: "Seleccione una opcion",
-        showCancelButton: true,
-        inputValidator: function(value) {
-          option = value;
-          nameOrigen = options[option];
-          console.log(options[option]);
-        }
-      });
+      this.tittleOrigen = "Seleccione alguna tabla";
+      this.tablenamesOrigen = options;
     },
     saveDestino: async function(event) {
       //origenComp = true;
@@ -317,19 +348,8 @@ export default {
         }
       }
 
-      var option;
-      this.$swal.fire({
-        title: "Eliga una tabla",
-        input: "select",
-        inputOptions: options,
-        inputPlaceholder: "Seleccione una opcion",
-        showCancelButton: true,
-        inputValidator: function(value) {
-          option = value;
-          nameDestino = options[option];
-          console.log(options[option]);
-        }
-      });
+      this.tittleDestino = "Seleccione alguna tabla";
+      this.tablenamesDestino = options;
     },
     showAlert() {
       // Use sweetalret2
