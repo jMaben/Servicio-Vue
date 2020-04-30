@@ -22,12 +22,15 @@
                   <option v-for="post in post" v-bind:key="post.id" :value="post.id">{{post.alias}}</option>
                 </select>
                 <br />
-                <h5>{{tittleOrigen}} </h5>
-  <div v-for="tablenamesOrigen in tablenamesOrigen" v-bind:key="tablenamesOrigen" @click="saveTablenameOrigen($event)">
-    {{tablenamesOrigen}} 
-    <input type="checkbox" :value="tablenamesOrigen">
-  </div>
-
+                <h5>{{tittleOrigen}}</h5>
+                <div
+                  v-for="tablenamesOrigen in tablenamesOrigen"
+                  v-bind:key="tablenamesOrigen"
+                  @click="saveTablenameOrigen($event)"
+                >
+                  {{tablenamesOrigen}}
+                  <input type="checkbox" :value="tablenamesOrigen" />
+                </div>
               </div>
             </div>
             <div class="card-footer">
@@ -38,25 +41,33 @@
                   <option v-for="post in post" v-bind:key="post.id" :value="post.id">{{post.alias}}</option>
                 </select>
 
-                                <br />
-                <h5>{{tittleDestino}} </h5>
-  <div v-for="tablenamesDestino in tablenamesDestino" v-bind:key="tablenamesDestino" @click="saveTablenameDestino($event)">
-    {{tablenamesDestino}} 
-    <input type="checkbox" :value="tablenamesDestino">
-  </div>
+                <br />
+                <h5>{{tittleDestino}}</h5>
+                <div
+                  v-for="tablenamesDestino in tablenamesDestino"
+                  v-bind:key="tablenamesDestino"
+                  @click="saveTablenameDestino($event)"
+                >
+                  {{tablenamesDestino}}
+                  <input type="checkbox" :value="tablenamesDestino" />
+                </div>
               </div>
             </div>
           </div>
         </form>
         <button title="Guardar" @click="Submit()" class="btn btn-success">Insertar</button>
         <br />
-            <br />
-        <h5><strong>{{infotittle}}</strong></h5>
         <br />
-        <p>{{infoorigen}}</p>
-        <p>{{infodestino}}</p>
-        <h5>{{infodatos}} </h5>
-        <p>{{infotext}}</p>
+        <div class="ex3">
+          <h5>
+            <strong>{{infotittle}}</strong>
+          </h5>
+          <br />
+          <p>{{infoorigen}}</p>
+          <p>{{infodestino}}</p>
+          <h5>{{infodatos}}</h5>
+          <p>{{infotext}}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -81,14 +92,13 @@ export default {
       post: [],
       tablenamesOrigen: [],
       tablenamesDestino: [],
-      tittleOrigen:null,
-      tittleDestino:null,
-        infotittle: null,
-        infoorigen: null,
-        infodestino: null,
-        infotext:null,
-        infodatos: null
-      
+      tittleOrigen: null,
+      tittleDestino: null,
+      infotittle: null,
+      infoorigen: null,
+      infodestino: null,
+      infotext: null,
+      infodatos: null
     };
   },
   created() {
@@ -155,18 +165,18 @@ export default {
           //Alert
           const text = JSON.stringify(select.data);
           //alert(text);
-              this.infotittle= "Informacion de inserción";
-             this.infoorigen= "Origen de los datos: " + nameOrigen;
-              this.infodestino= "Destino de los datos: " + nameDestino;
-              this.infodatos = "Texto de inserción:"
-              this.infotext= text;
+          this.infotittle = "Informacion de inserción";
+          this.infoorigen = "Origen de los datos: " + nameOrigen;
+          this.infodestino = "Destino de los datos: " + nameDestino;
+          this.infodatos = "Texto de inserción:";
+          this.infotext = text;
           insertData(select.data, connecDestino.data);
         } else {
-                      Swal.fire(
-              "Error al cargar",
-              "No se ha podido cargar los datos",
-              "warning"
-            );
+          Swal.fire(
+            "Error al cargar",
+            "No se ha podido cargar los datos",
+            "warning"
+          );
         }
       } else {
         this.$swal.fire({
@@ -259,19 +269,26 @@ export default {
           .post("http://localhost:8090/api/dbsql/dbsql/insertElements", send)
           .then(response => {
             if (response.status == 201) {
-                            alert("bien");
+              alert("bien");
             }
           })
           .catch(err => {
-          alert("mal");
+            alert("mal");
           });
       }
     },
-    saveTablenameOrigen(event){
-      nameOrigen = event.target.value;
+    saveTablenameOrigen(event) {
+      if (event.target.checked != false) {
+        nameOrigen = event.target.value;
+        console.log(nameOrigen);
+      }
+      //nameOrigen = event.target.value;
     },
-    saveTablenameDestino(event){
-      nameDestino = event.target.value;
+    saveTablenameDestino(event) {
+      if (event.target.checked != false) {
+        nameDestino = event.target.value;
+        console.log(nameDestino);
+      }
     },
     saveOrigen: async function(event) {
       //origenComp = true;
@@ -358,3 +375,12 @@ export default {
   }
 };
 </script>
+
+<style>
+div.ex3 {
+  background-color: rgb(255, 255, 255);
+  width: 550px;
+  height: 600px;
+  overflow: auto;
+}
+</style>
