@@ -150,7 +150,7 @@ export default {
           )
           .catch(err => {
             console.log(err);
-            Swal.fire(
+           this.$swal.fire(
               "Error al cargar",
               "No se ha podido cargar los datos",
               "warning"
@@ -172,7 +172,7 @@ export default {
           this.infotext = text;
           insertData(select.data, connecDestino.data);
         } else {
-          Swal.fire(
+          this.$swal.fire(
             "Error al cargar",
             "No se ha podido cargar los datos",
             "warning"
@@ -269,11 +269,11 @@ export default {
           .post("http://localhost:8090/api/dbsql/dbsql/insertElements", send)
           .then(response => {
             if (response.status == 201) {
-              alert("bien");
+              alert("Se ha ejecutado la inserción correctamente");
             }
           })
           .catch(err => {
-            alert("mal");
+            alert("Ha ocurrido un error fatal");
           });
       }
     },
