@@ -76,6 +76,7 @@
 <script>
 import Vue from "vue";
 import VueSweetalert2 from "vue-sweetalert2";
+import Swal from "sweetalert2";
 
 Vue.use(VueSweetalert2);
 
@@ -150,7 +151,7 @@ export default {
           )
           .catch(err => {
             console.log(err);
-           this.$swal.fire(
+            Swal.fire(
               "Error al cargar",
               "No se ha podido cargar los datos",
               "warning"
@@ -172,11 +173,11 @@ export default {
           this.infotext = text;
           insertData(select.data, connecDestino.data);
         } else {
-          this.$swal.fire(
-            "Error al cargar",
-            "No se ha podido cargar los datos",
-            "warning"
-          );
+        Swal.fire(
+              "Error al cargar",
+              "No se ha podido cargar los datos",
+              "warning"
+            );
         }
       } else {
         this.$swal.fire({
@@ -269,11 +270,21 @@ export default {
           .post("http://localhost:8090/api/dbsql/dbsql/insertElements", send)
           .then(response => {
             if (response.status == 201) {
-              alert("Se ha ejecutado la inserción correctamente");
+              Swal.fire(
+                "Inserción correcta",
+                "Se han cargado con exito los datos",
+                "success"
+              );
+              //alert("Se ha ejecutado la inserción correctamente");
             }
           })
           .catch(err => {
-            alert("Ha ocurrido un error fatal");
+            Swal.fire(
+              "Error al cargar",
+              "No se ha podido cargar los datos",
+              "warning"
+            );
+            //alert("Ha ocurrido un error fatal");
           });
       }
     },
