@@ -171,13 +171,45 @@ export default {
           this.infodestino = "Destino de los datos: " + nameDestino;
           this.infodatos = "Texto de inserción:";
           this.infotext = text;
-          insertData(select.data, connecDestino.data);
+          //Insert swal
+          const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: "btn btn-success",
+              cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+          });
+
+          swalWithBootstrapButtons
+            .fire({
+              title: '¿Desea insertar los "ID"?',
+              text:
+                "Solo se recomienda en una base de datos vacio y sin Autoincrement",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Si",
+              cancelButtonText: "No",
+              reverseButtons: true
+            })
+            .then(result => {
+              if (result.value) {
+                //Metodo para hacer con id
+                alert("con id");
+              } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+              ) {
+                //Metodo sin id
+                insertData(select.data, connecDestino.data);
+              }
+            });
+          // insertData(select.data, connecDestino.data);
         } else {
-        Swal.fire(
-              "Error al cargar",
-              "No se ha podido cargar los datos",
-              "warning"
-            );
+          Swal.fire(
+            "Error al cargar",
+            "No se ha podido cargar los datos",
+            "warning"
+          );
         }
       } else {
         this.$swal.fire({
