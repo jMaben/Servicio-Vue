@@ -193,14 +193,14 @@ export default {
             })
             .then(result => {
               if (result.value) {
-                //Metodo para hacer con id
-                alert("con id");
+                var yes = "YES";
+                insertData(select.data, connecDestino.data, yes);
               } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
               ) {
-                //Metodo sin id
-                insertData(select.data, connecDestino.data);
+                var no = "NO";
+                insertData(select.data, connecDestino.data, no);
               }
             });
           // insertData(select.data, connecDestino.data);
@@ -222,9 +222,8 @@ export default {
         });
       }
 
-      function insertData(text, connection) {
+      function insertData(text, connection, response) {
         text.name = nameDestino;
-        console.log(text);
 
         var columns = text.columns;
         var fieldsNames = [];
@@ -232,22 +231,29 @@ export default {
         for (var i = 0; i < columns.length; i++) {
           exist = false;
           for (var j = 0; j < fieldsNames.length; j++) {
-            if (
-              fieldsNames[j] == columns[i].columnName ||
-              columns[i].columnName == "id"
-            ) {
+            if (fieldsNames[j] == columns[i].columnName) {
+              exist = true;
+            } else if (response == "NO" && columns[i].columnName == "id") {
               exist = true;
             }
           }
-          if (!exist && columns[i].columnName != "id") {
+          if (!exist && response == "NO") {
+            if (columns[i].columnName != "id") {
+              fieldsNames.push(columns[i].columnName);
+            }
+          } else if (!exist && response == "YES") {
             fieldsNames.push(columns[i].columnName);
           }
         }
         var values = [];
-        for (var x = 0; x < columns.length; x++) {
-          if (columns[x].columnName != "id") {
+        for(var x = 0; x < columns.length; x++){
+          if(response == "YES"){
             values.push(columns[x].value);
-          }
+          }else{
+            if(columns[x].columnName != "id"){
+             values.push(columns[x].value);
+           }
+        }
         }
         var indexName = 0;
         var firstTime = true;
