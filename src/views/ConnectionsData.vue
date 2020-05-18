@@ -55,6 +55,7 @@
             </div>
           </div>
         </form>
+        <button title="Conversión" @click="Conversion()" class="btn btn-info">Conversión</button>
         <button title="Guardar" @click="Submit()" class="btn btn-success">Insertar</button>
         <br />
         <br />
@@ -416,6 +417,12 @@ export default {
 
       this.tittleDestino = "Seleccione alguna tabla";
       this.tablenamesDestino = options;
+    },
+    Conversion(){
+      if (nameDestino !=null && idDestino != 0 && idOrigen != 0 && nameOrigen !=null) {
+      var route = "ConverMeta/" + idOrigen +"/"+ idDestino +"/"+ nameOrigen +"/"+ nameDestino;
+      this.$router.push(route);
+      }
     },
     showAlert() {
       // Use sweetalret2

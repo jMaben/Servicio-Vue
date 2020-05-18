@@ -50,6 +50,12 @@ const routes = [
     props: true,
   },
   {
+    path: '/ConverMeta/:idOrigen/:idDestino/:nameOrigen/:nameDestino',
+    name: 'ConverMeta',
+    component: () => import( '../views/ConverMeta.vue'),
+    props: true,
+  },
+  {
     path: '/formConnections',
     name: 'FormConnections',
     component: () => import( '../views/FormConnections.vue')
