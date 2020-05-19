@@ -422,6 +422,12 @@ export default {
       if (nameDestino !=null && idDestino != 0 && idOrigen != 0 && nameOrigen !=null) {
       var route = "ConverMeta/" + idOrigen +"/"+ idDestino +"/"+ nameOrigen +"/"+ nameDestino;
       this.$router.push(route);
+      }else {
+        Swal.fire(
+            "Error al convertir",
+            "Debe seleccionar los datos necesarios para continuar",
+            "warning"
+          );
       }
     },
     showAlert() {
