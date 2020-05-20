@@ -42,6 +42,12 @@
 </template>
 
 <script>
+import Vue from "vue";
+import VueSweetalert2 from "vue-sweetalert2";
+import Swal from "sweetalert2";
+
+Vue.use(VueSweetalert2);
+
 import axios from "axios";
 var insertText;
 var conDestino;
@@ -147,11 +153,11 @@ export default {
       console.log(resetMetadates);
       var array = resetMetadates;
       for (let index = 0; index < array.length; index++) {
-        insertMetadates[index] = array[index]; 
+        insertMetadates[index] = array[index];
       }
     },
     saveChosenOne(event, cambio) {
-      var pick =  event.target.value;
+      var pick = event.target.value;
       var indicator = 0;
       for (let index = 0; index < insertMetadates.length; index++) {
         if (resetMetadates[index] == cambio) {
@@ -178,6 +184,143 @@ export default {
         i++;
       }
       console.log(insertText);
+      var destiny = this.nameDestino;
+      //Insert swal
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: '¿Desea insertar los "ID"?',
+          text:
+            "Solo se recomienda en una base de datos vacio y sin Autoincrement",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si",
+          cancelButtonText: "No",
+          reverseButtons: true
+        })
+        .then(result => {
+          if (result.value) {
+            var yes = "YES";
+            insertData(insertText, conDestino, yes, destiny);
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            var no = "NO";
+            insertData(insertText, conDestino, no, destiny);
+          }
+        });
+
+      function insertData(text, connection, response, destinyData) {
+        text.name = destinyData;
+
+        var columns = text.columns;
+        var fieldsNames = [];
+        var exist = false;
+        for (var i = 0; i < columns.length; i++) {
+          exist = false;
+          for (var j = 0; j < fieldsNames.length; j++) {
+            if (fieldsNames[j] == columns[i].columnName) {
+              exist = true;
+            } else if (response == "NO" && columns[i].columnName == "id") {
+              exist = true;
+            }
+          }
+          if (!exist && response == "NO") {
+            if (columns[i].columnName != "id") {
+              fieldsNames.push(columns[i].columnName);
+            }
+          } else if (!exist && response == "YES") {
+            fieldsNames.push(columns[i].columnName);
+          }
+        }
+        var values = [];
+        for (var x = 0; x < columns.length; x++) {
+          if (response == "YES") {
+            values.push(columns[x].value);
+          } else {
+            if (columns[x].columnName != "id") {
+              values.push(columns[x].value);
+            }
+          }
+        }
+        var indexName = 0;
+        var firstTime = true;
+        var tables = "";
+        var newTable = false;
+        for (var y = 0; y < values.length; y++) {
+          if (firstTime) {
+            firstTime = false;
+            tables = tables + '{ "name": "' + text.name + '", "fields": [';
+          }
+          if (newTable) {
+            newTable = false;
+            tables = tables + ']},{ "name": "' + text.name + '", "fields": [';
+          }
+          if (indexName < fieldsNames.length) {
+            if (indexName == 0) {
+              tables =
+                tables +
+                '{"name": "' +
+                fieldsNames[indexName] +
+                '", "value": "' +
+                values[y] +
+                '"}';
+            } else {
+              tables =
+                tables +
+                ',{"name": "' +
+                fieldsNames[indexName] +
+                '", "value": "' +
+                values[y] +
+                '"}';
+            }
+          }
+          indexName++;
+          if (indexName == fieldsNames.length && y != values.length) {
+            newTable = true;
+            indexName = 0;
+          }
+        }
+        tables = tables + "]}";
+        var send = {
+          host: connection.host,
+          alias: connection.alias,
+          user: connection.user,
+          pass: connection.pass,
+          port: parseInt(connection.port),
+          tables: JSON.parse("[" + tables + "]")
+        };
+        console.log(send);
+
+        axios
+          .post("http://localhost:8090/api/dbsql/dbsql/insertElements", send)
+          .then(response => {
+            if (response.status == 201) {
+              Swal.fire(
+                "Inserción correcta",
+                "Se han cargado con exito los datos",
+                "success"
+              );
+              //alert("Se ha ejecutado la inserción correctamente");
+            }
+          })
+          .catch(err => {
+            Swal.fire(
+              "Error al cargar",
+              "No se ha podido cargar los datos",
+              "warning"
+            );
+            //alert("Ha ocurrido un error fatal");
+          });
+      }
     }
   }
 };
