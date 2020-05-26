@@ -56,6 +56,12 @@ const routes = [
     props: true,
   },
   {
+    path: '/MetaTransform/:idOrigen/:idDestino/:nameOrigen/:nameDestino',
+    name: 'MetaTransform',
+    component: () => import( '../views/MetaTransform.vue'),
+    props: true,
+  },
+  {
     path: '/formConnections',
     name: 'FormConnections',
     component: () => import( '../views/FormConnections.vue')

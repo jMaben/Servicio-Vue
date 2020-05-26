@@ -55,6 +55,7 @@
             </div>
           </div>
         </form>
+        <button title="Conversión" @click="Transformations()" class="btn btn-warning">Transformar</button>
         <button title="Conversión" @click="Conversion()" class="btn btn-info">Conversión</button>
         <button title="Guardar" @click="Submit()" class="btn btn-success">Insertar</button>
         <br />
@@ -425,6 +426,18 @@ export default {
       }else {
         Swal.fire(
             "Error al convertir",
+            "Debe seleccionar los datos necesarios para continuar",
+            "warning"
+          );
+      }
+    },
+    Transformations(){
+      if (nameDestino !=null && idDestino != 0 && idOrigen != 0 && nameOrigen !=null) {
+      var route = "MetaTransform/" + idOrigen +"/"+ idDestino +"/"+ nameOrigen +"/"+ nameDestino;
+      this.$router.push(route);
+      }else {
+        Swal.fire(
+            "Error al Transformar",
             "Debe seleccionar los datos necesarios para continuar",
             "warning"
           );
